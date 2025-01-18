@@ -9,7 +9,6 @@ repository = "https://github.com/falk-werner/fetch"
 version = "0.1.1"
 authors = ["Falk Werner"]
 license = "MIT"
-license-file = "LICENSE"
 edition = "2021"
 
 [dependencies]
