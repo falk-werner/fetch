@@ -4,6 +4,9 @@ use axum::{
     http::header::USER_AGENT,
     routing::get,
     routing::post,
+    routing::put,
+    routing::patch,
+    routing::delete,
     Router,
 };
 
@@ -15,8 +18,11 @@ async fn main() {
     let app = Router::new()
         .route("/", get(welcome))
         .route("/slow_answer", get(slow_answer))
-        .route("/echo_data", post(echo_data))
+        .route("/echo_post", post(echo_data))
+        .route("/echo_put", put(echo_data))
+        .route("/echo_patch", patch(echo_data))
         .route("/echo_form", post(echo_form))
+        .route("/delete", delete(do_delete))
         .route("/user_agent", get(get_user_agent))
         ;
 
@@ -46,6 +52,10 @@ async fn slow_answer() -> &'static str {
 
 async fn echo_data(body:String) -> String {
     body
+}
+
+async fn do_delete() -> &'static str {
+    "Removed"
 }
 
 async fn echo_form(mut multipart: Multipart) -> String {

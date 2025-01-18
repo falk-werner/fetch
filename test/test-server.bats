@@ -36,7 +36,17 @@ teardown() {
 }
 
 @test "post data" {
-    data=$($FETCH -K https://localhost:9000/echo_data -d foobar)
+    data=$($FETCH -K https://localhost:9000/echo_post -d foobar)
+    [[ "$data" == "foobar" ]]
+}
+
+@test "put data" {
+    data=$($FETCH -K -X put https://localhost:9000/echo_put -d foobar)
+    [[ "$data" == "foobar" ]]
+}
+
+@test "patch data" {
+    data=$($FETCH -K -X patch https://localhost:9000/echo_patch -d foobar)
     [[ "$data" == "foobar" ]]
 }
 
@@ -44,6 +54,11 @@ teardown() {
     data=$($FETCH -K https://localhost:9000/echo_form -F name=Bob -F type=cat)
     echo "$data"
     [[ "$data" == "name = Bob;type = cat;" ]]
+}
+
+@test "delete data" {
+    data=$($FETCH -K -X delete https://localhost:9000/delete )
+    [[ "$data" == "Removed" ]]
 }
 
 @test "add http header" {
