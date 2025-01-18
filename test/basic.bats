@@ -59,6 +59,16 @@ teardown() {
     [[ ! -e $DATA_DIR/out.bin ]]
 }
 
+@test "don't print anything to stdout when SHA256 check fails" {
+    INVALID_HASH=baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaad
+    if $FETCH -L $URL --sha256 $INVALID_HASH > $DATA_DIR/out.bin ; then
+        false
+    fi
+    [[ -e $DATA_DIR/out.bin ]]
+    EMPTY_HASH=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    echo "$EMPTY_HASH  $DATA_DIR/out.bin" | sha256sum --check --status
+}
+
 @test "check MD5 of download" {
     $FETCH -L $URL --md5 $MD5_HASH -o $DATA_DIR/out.bin 
     [[ -e $DATA_DIR/out.bin ]]
