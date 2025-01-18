@@ -125,7 +125,7 @@ async fn download(response: Response,args: &Args, filename: &PathBuf) {
     let mut stream = response.bytes_stream();
     while let Some(item) = stream.next().await {
         if item.is_err() {
-            eprintln!("error: content length too large");
+            eprintln!("error: failed to read reponse data");
             std::fs::remove_file(filename).unwrap();
             exit(1);
         }
@@ -133,7 +133,7 @@ async fn download(response: Response,args: &Args, filename: &PathBuf) {
         let data = item.unwrap();
         count += data.len() as u64;
         if args.max_filesize > 0 && count > args.max_filesize {
-            eprintln!("error: content length too large");
+            eprintln!("error: content length too large: expected max. {} bytes, but {} bytes received", args.max_filesize, count);
             std::fs::remove_file(filename).unwrap();
             exit(1);
         }
@@ -262,7 +262,7 @@ async fn main() {
     if args.max_filesize > 0 {
         if let Some(content_length) = response.content_length() {
             if content_length > args.max_filesize {
-                eprintln!("error: content length too large");
+                eprintln!("error: content length too large: {} bytes max. expected, but {} bytes content length", args.max_filesize, content_length);
                 exit(1);
             }
         }
@@ -284,7 +284,7 @@ async fn main() {
         loop {
             let result = file.read(&mut buffer);
             if result.is_err() {
-                eprintln!("error: content length too large");
+                eprintln!("error: failed to read file");
                 let _ = std::fs::remove_file(filename);
                 exit(1);
             }
