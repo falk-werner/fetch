@@ -60,4 +60,12 @@ named the same as `curl`'s options. Therefore, `fetch` can be used as drop-in re
 | -h, --help | flag | Print help |
 | -V, --version | flag | Print version |
 
+# Run tests
+
+In order to run tests, [bats](https://github.com/bats-core/bats-core) is needed.
+Please install `bats` and build `fetch` before running the tests.
+
+```bash
+bats test
+```
 
