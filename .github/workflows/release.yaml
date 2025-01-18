@@ -1,0 +1,72 @@
+name: Release
+
+on:
+  push:
+    tags: [ "v*" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+        run: |
+          gh release create "$tag" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
+              --notes-file=NOTES.md \
+              --generate-notes  \
+              --latest \
+              --verify-tag   
+
+  build:
+    needs: release
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ ubuntu-20.04, ubuntu-22.04, ubuntu-24.04 ]
+    runs-on: ${{ matrix.platform }}
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup cargo
+      run: cargo install cargo-deb
+
+    - name: Build
+      run: cargo build
+
+    - name: Run tests
+      run: cargo test
+
+    - name: Run clippy
+      run: cargo clippy
+
+    - name: Create debian package
+      run: cargo deb
+      
+    - name: Upload artifact
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ github.ref_name }}
+      run: |
+        mv target/debian/fetch_*_amd64.deb "fetch_${tag#v}-${{ matrix.platform }}_amd64.deb"
+        sha256sum "fetch_${tag#v}-${{ matrix.platform }}_amd64.deb" > "fetch_${tag#v}-${{ matrix.platform }}_amd64.deb.sha256"
+        gh release upload "${tag}" \
+          "fetch_${tag#v}-${{ matrix.platform }}_amd64.deb" \
+          "fetch_${tag#v}-${{ matrix.platform }}_amd64.deb.sha256"
+
