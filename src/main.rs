@@ -76,6 +76,7 @@ fn get_request_method(args: & Args) -> Method {
         let request_method = request_method.to_lowercase();
         match request_method.as_str() {
             "get" => Method::GET,
+            "put" => Method::PUT,
             "post" => Method::POST,
             "delete" => Method::DELETE,
             "head" => Method::HEAD,
@@ -299,5 +300,78 @@ async fn main() {
         }
 
         let _ = std::fs::remove_file(filename);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_filename() {
+        let foo = Some(String::from("foo"));
+        let actual = get_filename(&foo);
+        assert_eq!(PathBuf::from("foo"), actual);
+
+        let actual = get_filename(&None);
+        assert!(std::fs::exists(actual).is_ok());
+    }
+
+    fn args_from_method(method: Option<String>, data: Option<String>) -> Args {
+        Args {
+            url: String::from(""),
+            output: None,
+            request: method,
+            header: Vec::new(),
+            data: data,
+            form: Vec::new(),
+            insecure: false,
+            location: false,
+            max_redirs: 0,
+            max_filesize: 0,
+            connect_timeout: 0,
+            max_time: 0,
+            sha256: None,
+            md5: None,
+        }
+    }
+
+    #[test]
+    fn test_get_request_method() {
+        let args = args_from_method(Some(String::from("get")), None);
+        assert_eq!(Method::GET, get_request_method(&args));
+
+        let args = args_from_method(Some(String::from("GET")), None);
+        assert_eq!(Method::GET, get_request_method(&args));
+        
+        let args = args_from_method(Some(String::from("PUT")), None);
+        assert_eq!(Method::PUT, get_request_method(&args));
+
+        let args = args_from_method(Some(String::from("POST")), None);
+        assert_eq!(Method::POST, get_request_method(&args));
+
+        let args = args_from_method(Some(String::from("DELETE")), None);
+        assert_eq!(Method::DELETE, get_request_method(&args));
+
+        let args = args_from_method(Some(String::from("HEAD")), None);
+        assert_eq!(Method::HEAD, get_request_method(&args));
+
+        let args = args_from_method(Some(String::from("OPTIONS")), None);
+        assert_eq!(Method::OPTIONS, get_request_method(&args));
+
+        let args = args_from_method(Some(String::from("CONNECT")), None);
+        assert_eq!(Method::CONNECT, get_request_method(&args));
+
+        let args = args_from_method(Some(String::from("PATCH")), None);
+        assert_eq!(Method::PATCH, get_request_method(&args));
+
+        let args = args_from_method(Some(String::from("TRACE")), None);
+        assert_eq!(Method::TRACE, get_request_method(&args));
+
+        let args = args_from_method(None, Some(String::from("")));
+        assert_eq!(Method::POST, get_request_method(&args));
+
+        let args = args_from_method(None, None);
+        assert_eq!(Method::GET, get_request_method(&args));
     }
 }
