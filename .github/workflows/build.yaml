@@ -1,4 +1,4 @@
-name: build
+name: Build
 
 on:
   push:
@@ -11,14 +11,34 @@ env:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ ubuntu-20.04, ubuntu-22.04, ubuntu-24.04 ]
+    runs-on: ${{ matrix.platform }}
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup cargo
+      run: cargo install cargo-deb
+
     - name: Build
       run: cargo build --verbose
+
     - name: Run tests
       run: cargo test --verbose
+
     - name: Run clippy
       run: cargo clippy --verbose
+
+    - name: Create debian package
+      run: cargo deb
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: fetch-${{ matrix.platform }}.deb
+        path: target/debian/fetch_*_amd64.deb 
+
