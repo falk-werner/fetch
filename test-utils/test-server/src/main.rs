@@ -20,10 +20,6 @@ async fn main() {
         .route("/user_agent", get(get_user_agent))
         ;
 
-//    let listener = tokio::net::TcpListener::bind("localhost:9000").await.unwrap();
-//    axum::serve(listener, app).await.unwrap();
-
-
     // configure certificate and private key used by https
     let key = include_bytes!("key.pem").to_vec();
     let cert = include_bytes!("cert.pem").to_vec();
