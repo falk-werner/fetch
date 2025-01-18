@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-axum = "0.8.1"
+axum = { version = "0.8.1", features = ["multipart"] }
+axum-server = { version = "0.7.1", features = ["tls-rustls"] }
 tokio = { version = "1.43.0", features = ["macros", "rt-multi-thread"] }
