@@ -1,0 +1,28 @@
+name: fetch 
+base: core22
+version: '0.1.1'
+license: 'MIT'
+summary: Download files and verify checksum.
+description: |
+  Downlaods a file an optionally verfies it's MD5 or SHA256 checksum.
+website: 'https://github.com/falk-werner/fetch'
+issues: 'https://github.com/falk-werner/fetch/issues'
+icon: logo/logo.png
+
+grade: stable
+confinement: strict
+
+parts:
+  fetch:
+    plugin: rust
+    source: .
+    build-packages:
+      - pkg-config
+      - libssl-dev
+
+apps:
+  fetch:
+    plugs:
+      - home
+      - network
+    command: bin/fetch
