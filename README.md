@@ -1,5 +1,7 @@
 [![build](https://github.com/falk-werner/fetch/actions/workflows/build.yaml/badge.svg)](https://github.com/falk-werner/fetch/actions/workflows/build.yaml)
 
+[![Snap Store](https://raw.githubusercontent.com/snapcore/snap-store-badges/master/EN/[EN]-snap-store-white.png)](https://snapcraft.io/fetch)
+
 # fetch
 
 Downloads an aritfact from a URL and optionally verifies it's SHA256 or MD5 checksum.
