@@ -62,7 +62,44 @@ named the same as `curl`'s options. Therefore, `fetch` can be used as drop-in re
 | -h, --help | flag | Print help |
 | -V, --version | flag | Print version |
 
-# Run tests
+## Missing Features
+
+Fetch does not aim at full curl compatibility, since fetch focuses on
+http / https protocol only. We also do not aim to support each http / https
+related option, since some options are rarely used. Before reaching v1.0.0
+the following feates should be supported.
+
+- allow using files for `POST` and `PUT` data  
+  curl option: `--data-raw` using `@`
+- specify root certificte for peer verification  
+  curl options: `--cacert`, `--capath`, `--crlfile`
+- basic proxy support  
+  curl options: `-x`, `--proxy`, `-U`, `--proxy-user`
+- specify http protocol usage  
+  curl option: `--proto`
+- specify minimum TLS version  
+  curl options: `-1`, `--tlsv1`, `--tlsv1.0`, `--tlsv1.1`, `--tlsv1.2`, `--tlsv1.3`
+
+There are also some useful features which may be supported after v1.0.0:
+
+- mTLS support  
+  curl options: `-E`, `--cert`, `--cert-status`, `--cert-type`
+- .netrc support  
+  curl options: `-n`, `--netrc`, `--netrc-file`
+- show document information  
+  curl options: `-I`, `--head`
+- dump response headers info file  
+  curl options: `-D`, `--dump-reader`
+- allow to output body on http errors  
+  curl option: `--fail-with-body`
+- etag support  
+  curl options: `--etag-compare`, `--etag-save`
+- put post data in url for GET request  
+  curl options: `-G`, `--get`
+- convenience helpers for often used headers  
+  curl options: `-u`, `--user`, `-A`, `--user-agent`, `-r`, `--range`, `-e`, `--referer`, `-b`, `--cookie`, `-c`, `--cookie-jar`
+
+## Run tests
 
 In order to run tests, [bats](https://github.com/bats-core/bats-core) is needed.
 Please install `bats` and build `fetch` before running the tests.
