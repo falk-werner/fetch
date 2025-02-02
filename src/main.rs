@@ -83,6 +83,10 @@ struct Args {
     #[arg(long="tlsv1.3")]
     tlsv1_3: bool,
 
+    /// Enable or disable Protocols
+    #[arg(long="proto", allow_hyphen_values=true, default_value="")]
+    proto: String,
+
     /// SHA256 checksum of the artifact to download.
     #[arg(long)]
     sha256: Option<String>,
@@ -90,6 +94,11 @@ struct Args {
     /// MD5 checksum of the artifacto to download.
     #[arg(long)]
     md5: Option<String>,
+}
+
+struct Protocols {
+    http: bool,
+    https: bool,
 }
 
 fn get_request_method(args: & Args) -> Method {
@@ -119,6 +128,54 @@ fn get_request_method(args: & Args) -> Method {
     }
 }
 
+fn get_protocols(protocols: &String) -> Protocols
+{
+    let mut result = Protocols {http: true, https: true };
+    for part in protocols.split(',') {
+        if let Some(modifier) = part.trim().chars().next() {
+            match modifier {
+                '=' => {
+                    let protocol = &part[1..];
+                    match protocol {
+                        "all" => { result = Protocols{http: true, https: true}; },
+                        "http" => { result = Protocols{http: true, https: false}; },
+                        "https" => { result = Protocols{http: false, https: true}; },
+                        _ => {
+                            eprintln!("warning: unrecognized protocol \'{}''", protocol);
+                        }
+                    }
+                },
+                '+' => {
+                    let protocol = &part[1..];
+                    match protocol {
+                        "all" => { result = Protocols{http: true, https: true}; },
+                        "http" => { result.http = true; },
+                        "https" => { result.https = true; },
+                        _ => {
+                            eprintln!("warning: unrecognized protocol \'{}''", protocol);
+                        }
+                    };                
+                },
+                '-' => {
+                    let protocol = &part[1..];
+                    match protocol {
+                        "all" => { result = Protocols{http: false, https: false}; },
+                        "http" => { result.http = false; },
+                        "https" => { result.https = false; },
+                        _ => {
+                            eprintln!("warning: unrecognized protocol \'{}''", protocol);
+                        }
+                    };                
+                },
+                _ => {
+                    eprintln!("warning: unrecognized protocol \'{}''", part);
+                }
+            }
+        }
+    }
+    result
+}
+
 fn get_filename(filename: &Option<String>) -> PathBuf {
     if let Some(name) = filename {
         PathBuf::from(name)
@@ -135,7 +192,7 @@ fn get_filename(filename: &Option<String>) -> PathBuf {
 async fn download(response: Response,args: &Args, filename: &PathBuf) {
     let file = std::fs::File::create(filename.clone());
     if file.is_err() {
-        eprint!("error: failed to create file");
+        eprintln!("error: failed to create file");
         exit(1);
     }
     let mut file = file.unwrap();
@@ -249,6 +306,15 @@ async fn main() {
             .min_tls_version(Version::TLS_1_3);
     }
 
+    // protocols
+    // Note that we only parse protocols to determine
+    // if http_only can be enabled. The underlying
+    // library does not allow to disbale https.
+    let protocols = get_protocols(&args.proto);
+    if !protocols.http && protocols.https {
+        builder = builder.https_only(true);
+    }
+
     let client = builder.build();
     if client.is_err() {
         eprintln!("error: failed to create http client");
@@ -286,14 +352,14 @@ async fn main() {
 
     let response = request_builder.send().await;
     if let Err(err) = response {
-        eprint!("error: {}", err);
+        eprintln!("error: {}", err);
         exit(1);
     }
     let response = response.unwrap();
 
     let status = response.status();
     if !status.is_success() {
-        eprint!("error: bad http status: {}: {}", status.as_u16(), status.as_str());
+        eprintln!("error: bad http status: {}: {}", status.as_u16(), status.as_str());
         exit(1);
     }
 
@@ -374,6 +440,7 @@ mod tests {
             tlsv1_1: false,
             tlsv1_2: false,
             tlsv1_3: false,
+            proto: String::from(""),
             sha256: None,
             md5: None,
         }
@@ -416,5 +483,37 @@ mod tests {
 
         let args = args_from_method(None, None);
         assert_eq!(Method::GET, get_request_method(&args));
+    }
+
+    #[test]
+    fn test_get_protocols() {
+        let protocols = get_protocols(&String::from(""));
+        assert!(protocols.http);
+        assert!(protocols.https);
+
+        let protocols = get_protocols(&String::from("all"));
+        assert!(protocols.http);
+        assert!(protocols.https);
+
+        let protocols = get_protocols(&String::from("=http"));
+        assert!(protocols.http);
+        assert!(!protocols.https);
+
+        let protocols = get_protocols(&String::from("=https"));
+        assert!(!protocols.http);
+        assert!(protocols.https);
+
+        let protocols = get_protocols(&String::from("http,-https"));
+        assert!(protocols.http);
+        assert!(!protocols.https);
+
+        let protocols = get_protocols(&String::from("-http,https"));
+        assert!(!protocols.http);
+        assert!(protocols.https);
+
+        let protocols = get_protocols(&String::from("-all,+http"));
+        assert!(protocols.http);
+        assert!(!protocols.https);
+
     }
 }
