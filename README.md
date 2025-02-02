@@ -57,6 +57,10 @@ named the same as `curl`'s options. Therefore, `fetch` can be used as drop-in re
 | --max-filesize | uint | Maximum file size to download |
 | --connection-timeout | uint | Maximum time allowed for connection in seconds |
 | -m, --max-time | uint | Maximum time allowed for transfer in seconds |
+| -1, --tlsv1, --tlsv1.0 | flag | Use TLSv1.0 or later |
+| --tlsv1.1 | flag | Use TLSv1.1 or later |
+| --tlsv1.2 | flag | Use TLSv1.2 or later |
+| --tlsv1.3 | flag | Use TLSv1.3 or later |
 | --sha256 | hex-string | SHA256 checksum of the artifact to download |
 | --md5 | hex-string | MD5 checksum of the artifact to download |
 | -h, --help | flag | Print help |
@@ -77,8 +81,6 @@ the following feates should be supported.
   curl options: `-x`, `--proxy`, `-U`, `--proxy-user`
 - specify http protocol usage  
   curl option: `--proto`
-- specify minimum TLS version  
-  curl options: `-1`, `--tlsv1`, `--tlsv1.0`, `--tlsv1.1`, `--tlsv1.2`, `--tlsv1.3`
 
 There are also some useful features which may be supported after v1.0.0:
 

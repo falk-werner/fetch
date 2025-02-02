@@ -6,7 +6,7 @@ categories = ["command-line-utilities"]
 readme = "README.md"
 homepage = "https://github.com/falk-werner/fetch"
 repository = "https://github.com/falk-werner/fetch"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Falk Werner"]
 license = "MIT"
 edition = "2021"
@@ -16,7 +16,7 @@ clap = { version = "4.5.27", features = ["derive"] }
 futures-util = "0.3.31"
 hex = "0.4.3"
 md-5 = "0.10.6"
-reqwest = { version = "0.12.12", features = ["multipart", "stream"] }
+reqwest = { version = "0.12.12", features = ["multipart", "stream", "rustls-tls"] }
 sha2 = "0.10.8"
 tempfile = "3.15.0"
 tokio = { version = "1.43.0", features = ["macros", "rt", "rt-multi-thread"] }

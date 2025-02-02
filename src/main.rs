@@ -1,5 +1,6 @@
 use clap::Parser;
 use futures_util::StreamExt;
+use reqwest::tls::Version;
 use reqwest::{ClientBuilder, redirect::Policy};
 use reqwest::{Method, Response};
 use reqwest::multipart::Form;
@@ -61,6 +62,26 @@ struct Args {
     /// Maximum time allowed for transfer in seconds.
     #[arg(short, long, default_value_t=0)]
     max_time: u64,
+
+    /// Use TLSv1.0 or later
+    #[arg(short='1', long)]
+    tlsv1 : bool,
+
+    /// Use TLSv1.0 or later
+    #[arg(long="tlsv1.0")]
+    tlsv1_0: bool,
+
+    /// Use TLSv1.1 or later
+    #[arg(long="tlsv1.1")]
+    tlsv1_1: bool,
+
+    /// Use TLSv1.2 or later
+    #[arg(long="tlsv1.2")]
+    tlsv1_2: bool,
+
+    /// Use TLSv1.3 or later
+    #[arg(long="tlsv1.3")]
+    tlsv1_3: bool,
 
     /// SHA256 checksum of the artifact to download.
     #[arg(long)]
@@ -211,6 +232,23 @@ async fn main() {
             .danger_accept_invalid_certs(true);
     }
 
+    // tls
+    if args.tlsv1 || args.tlsv1_0 {
+        builder = builder.min_tls_version(Version::TLS_1_0);
+    }
+    if args.tlsv1_1 {
+        builder = builder.min_tls_version(Version::TLS_1_1);
+    }
+    if args.tlsv1_2 {
+        builder = builder.min_tls_version(Version::TLS_1_2);
+    }
+    if args.tlsv1_3 {
+        // TLS 1.3 requires rustls on some machines
+        // otherwise a build error occurs
+        builder = builder.use_rustls_tls()
+            .min_tls_version(Version::TLS_1_3);
+    }
+
     let client = builder.build();
     if client.is_err() {
         eprintln!("error: failed to create http client");
@@ -331,6 +369,11 @@ mod tests {
             max_filesize: 0,
             connect_timeout: 0,
             max_time: 0,
+            tlsv1: false,
+            tlsv1_0: false,
+            tlsv1_1: false,
+            tlsv1_2: false,
+            tlsv1_3: false,
             sha256: None,
             md5: None,
         }
