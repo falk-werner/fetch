@@ -61,10 +61,38 @@ named the same as `curl`'s options. Therefore, `fetch` can be used as drop-in re
 | --tlsv1.1 | flag | Use TLSv1.1 or later |
 | --tlsv1.2 | flag | Use TLSv1.2 or later |
 | --tlsv1.3 | flag | Use TLSv1.3 or later |
+| --proto   | string | List of enabled protocols (see below) |
 | --sha256 | hex-string | SHA256 checksum of the artifact to download |
 | --md5 | hex-string | MD5 checksum of the artifact to download |
 | -h, --help | flag | Print help |
 | -V, --version | flag | Print version |
+
+## Protocols
+
+The argument of the `--proto` option is a single string that contains
+an expression that is evaluated from the left to the right. It contains
+a list of protocols with an optional modifier. The following modifiers
+are defined:
+
+- `+`: adds a protocol; default if no modifier is specified explicitly
+- `-`: removed a protocol
+- `=`: sets the specified protocol only
+
+Known protocols:
+
+- `all`: placeholder for all known protocols
+- `http`: HTTP protocol
+- `https`: HTTPS protocol
+
+Examples:
+
+- `=https`: allow HTTPS only
+- `-all,https`: allow HTTPS only
+- `-http`: don't allow HTTP
+
+Note that `fetch` uses this argument only to check, if HTTP-only mode
+can be activated, `fetch` does never disable HTTPS. The `--proto`
+option was added to maintain compatibility with `curl`.
 
 ## Missing Features
 
@@ -79,8 +107,8 @@ the following feates should be supported.
   curl options: `--cacert`, `--capath`, `--crlfile`
 - basic proxy support  
   curl options: `-x`, `--proxy`, `-U`, `--proxy-user`
-- specify http protocol usage  
-  curl option: `--proto`
+- silent mode  
+  curl options: `-s`, `-S`
 
 There are also some useful features which may be supported after v1.0.0:
 
@@ -100,6 +128,8 @@ There are also some useful features which may be supported after v1.0.0:
   curl options: `-G`, `--get`
 - convenience helpers for often used headers  
   curl options: `-u`, `--user`, `-A`, `--user-agent`, `-r`, `--range`, `-e`, `--referer`, `-b`, `--cookie`, `-c`, `--cookie-jar`
+- redirect `stderr`  
+  curl option: `--stderr`
 
 ## Run tests
 
