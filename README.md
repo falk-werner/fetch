@@ -62,6 +62,9 @@ named the same as `curl`'s options. Therefore, `fetch` can be used as drop-in re
 | --tlsv1.2 | flag | Use TLSv1.2 or later |
 | --tlsv1.3 | flag | Use TLSv1.3 or later |
 | --proto   | string | List of enabled protocols (see below) |
+| -s, --silent | flag | Silent mode |
+| -S, --show-error | flag | show error messages, even in silent mode |
+| -v, --verbose | flag | show additional log messages | 
 | --sha256 | hex-string | SHA256 checksum of the artifact to download |
 | --md5 | hex-string | MD5 checksum of the artifact to download |
 | -h, --help | flag | Print help |
@@ -107,8 +110,6 @@ the following feates should be supported.
   curl options: `--cacert`, `--capath`, `--crlfile`
 - basic proxy support  
   curl options: `-x`, `--proxy`, `-U`, `--proxy-user`
-- silent mode  
-  curl options: `-s`, `-S`
 
 There are also some useful features which may be supported after v1.0.0:
 
