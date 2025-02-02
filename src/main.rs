@@ -1,5 +1,7 @@
 use clap::Parser;
+use log::{warn, error};
 use futures_util::StreamExt;
+use logger::init_logger;
 use reqwest::tls::Version;
 use reqwest::{ClientBuilder, redirect::Policy};
 use reqwest::{Method, Response};
@@ -12,89 +14,10 @@ use std::io::{Write, Read};
 use sha2::{Sha256, Digest};
 use md5::Md5;
 
-/// Download an artifact from a given url and optionally verify checksum.
-#[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
-struct Args {
-    /// URL of the artifact to fetch.
-    url: String,
+mod logger;
+mod args;
 
-    /// Write to file instead of stdout.
-    #[arg(short, long)]
-    output: Option<String>,
-
-    /// Specify the request method to use.
-    #[arg(short='X', long)]
-    request: Option<String>,
-
-    /// Pass custom header(s) to server.
-    #[arg(short='H', long)]
-    header: Vec<String>,
-
-    /// Post data.
-    #[arg(short, long)]
-    data: Option<String>,
-
-    /// Specify multipart form data as name=value pair.
-    #[arg(short='F', long)]
-    form: Vec<String>,
-
-    /// Allow insecure server connections.
-    #[arg(short='K', long)]
-    insecure: bool,
-
-    /// Follow redirects.
-    #[arg(short='L', long)]
-    location: bool,
-
-    /// Maximum number of redirects allowed.
-    #[arg(long, default_value_t=5)]
-    max_redirs: usize,
-
-    /// Maximum file size to download.
-    #[arg(long, default_value_t=0)]
-    max_filesize: u64,
-
-    /// Maximum time allowed for connection in seconds.
-    #[arg(long, default_value_t=0)]
-    connect_timeout: u64,
-
-    /// Maximum time allowed for transfer in seconds.
-    #[arg(short, long, default_value_t=0)]
-    max_time: u64,
-
-    /// Use TLSv1.0 or later
-    #[arg(short='1', long)]
-    tlsv1 : bool,
-
-    /// Use TLSv1.0 or later
-    #[arg(long="tlsv1.0")]
-    tlsv1_0: bool,
-
-    /// Use TLSv1.1 or later
-    #[arg(long="tlsv1.1")]
-    tlsv1_1: bool,
-
-    /// Use TLSv1.2 or later
-    #[arg(long="tlsv1.2")]
-    tlsv1_2: bool,
-
-    /// Use TLSv1.3 or later
-    #[arg(long="tlsv1.3")]
-    tlsv1_3: bool,
-
-    /// Enable or disable Protocols
-    #[arg(long="proto", allow_hyphen_values=true, default_value="")]
-    proto: String,
-
-    /// SHA256 checksum of the artifact to download.
-    #[arg(long)]
-    sha256: Option<String>,
-
-    /// MD5 checksum of the artifacto to download.
-    #[arg(long)]
-    md5: Option<String>,
-}
+use crate::args::Args;
 
 struct Protocols {
     http: bool,
@@ -115,7 +38,7 @@ fn get_request_method(args: & Args) -> Method {
             "patch" => Method::PATCH,
             "trace" => Method::TRACE,
             _ => {
-                eprintln!("error: invalid request method");
+                error!("invalid request method");
                 exit(1);
             }
         }
@@ -141,7 +64,7 @@ fn get_protocols(protocols: &String) -> Protocols
                         "http" => { result = Protocols{http: true, https: false}; },
                         "https" => { result = Protocols{http: false, https: true}; },
                         _ => {
-                            eprintln!("warning: unrecognized protocol \'{}''", protocol);
+                            warn!("unrecognized protocol \'{}''", protocol);
                         }
                     }
                 },
@@ -152,7 +75,7 @@ fn get_protocols(protocols: &String) -> Protocols
                         "http" => { result.http = true; },
                         "https" => { result.https = true; },
                         _ => {
-                            eprintln!("warning: unrecognized protocol \'{}''", protocol);
+                            warn!("unrecognized protocol \'{}''", protocol);
                         }
                     };                
                 },
@@ -163,12 +86,12 @@ fn get_protocols(protocols: &String) -> Protocols
                         "http" => { result.http = false; },
                         "https" => { result.https = false; },
                         _ => {
-                            eprintln!("warning: unrecognized protocol \'{}''", protocol);
+                            warn!("unrecognized protocol \'{}''", protocol);
                         }
                     };                
                 },
                 _ => {
-                    eprintln!("warning: unrecognized protocol \'{}''", part);
+                    warn!("unrecognized protocol \'{}''", part);
                 }
             }
         }
@@ -192,7 +115,7 @@ fn get_filename(filename: &Option<String>) -> PathBuf {
 async fn download(response: Response,args: &Args, filename: &PathBuf) {
     let file = std::fs::File::create(filename.clone());
     if file.is_err() {
-        eprintln!("error: failed to create file");
+        error!("failed to create file");
         exit(1);
     }
     let mut file = file.unwrap();
@@ -203,7 +126,7 @@ async fn download(response: Response,args: &Args, filename: &PathBuf) {
     let mut stream = response.bytes_stream();
     while let Some(item) = stream.next().await {
         if item.is_err() {
-            eprintln!("error: failed to read reponse data");
+            error!("failed to read reponse data");
             std::fs::remove_file(filename).unwrap();
             exit(1);
         }
@@ -211,13 +134,13 @@ async fn download(response: Response,args: &Args, filename: &PathBuf) {
         let data = item.unwrap();
         count += data.len() as u64;
         if args.max_filesize > 0 && count > args.max_filesize {
-            eprintln!("error: content length too large: expected max. {} bytes, but {} bytes received", args.max_filesize, count);
+            error!("content length too large: expected max. {} bytes, but {} bytes received", args.max_filesize, count);
             std::fs::remove_file(filename).unwrap();
             exit(1);
         }
 
         if file.write_all(data.as_ref()).is_err() {
-            eprintln!("error: failed to write file");
+            error!("failed to write file");
             std::fs::remove_file(filename).unwrap();
             exit(1);
         }
@@ -233,7 +156,7 @@ async fn download(response: Response,args: &Args, filename: &PathBuf) {
         let hash = md5_hasher.finalize();
         let actual = hex::encode(hash).to_lowercase();
         if  actual != expected {
-            eprintln!("error: MD5 checksum mismatch: expected {} but was {}",
+            error!("MD5 checksum mismatch: expected {} but was {}",
                 expected, actual);
             std::fs::remove_file(filename).unwrap();
             exit(1);
@@ -247,7 +170,7 @@ async fn download(response: Response,args: &Args, filename: &PathBuf) {
         let hash = sha256_hasher.finalize();
         let actual = hex::encode(hash).to_lowercase();
         if actual != expected {
-            eprintln!("error: SHA256 checksum mismatch: expected {} but was {}",
+            error!("SHA256 checksum mismatch: expected {} but was {}",
                 expected, actual);
             let _ = std::fs::remove_file(filename);
             exit(1);
@@ -260,6 +183,8 @@ async fn download(response: Response,args: &Args, filename: &PathBuf) {
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
+    init_logger(&args);
+
     let request_method = get_request_method(&args);
 
     let mut builder = ClientBuilder::new();
@@ -317,7 +242,7 @@ async fn main() {
 
     let client = builder.build();
     if client.is_err() {
-        eprintln!("error: failed to create http client");
+        error!("failed to create http client");
         exit(1);
     }
     let client = client.unwrap();
@@ -352,21 +277,21 @@ async fn main() {
 
     let response = request_builder.send().await;
     if let Err(err) = response {
-        eprintln!("error: {}", err);
+        error!("{}", err);
         exit(1);
     }
     let response = response.unwrap();
 
     let status = response.status();
     if !status.is_success() {
-        eprintln!("error: bad http status: {}: {}", status.as_u16(), status.as_str());
+        error!("bad http status: {}: {}", status.as_u16(), status.as_str());
         exit(1);
     }
 
     if args.max_filesize > 0 {
         if let Some(content_length) = response.content_length() {
             if content_length > args.max_filesize {
-                eprintln!("error: content length too large: {} bytes max. expected, but {} bytes content length", args.max_filesize, content_length);
+                error!("content length too large: {} bytes max. expected, but {} bytes content length", args.max_filesize, content_length);
                 exit(1);
             }
         }
@@ -379,7 +304,7 @@ async fn main() {
     if args.output.is_none() {
         let file = File::open(filename.clone());
         if file.is_err() {
-            eprintln!("error: failed to open file");
+            error!("failed to open file");
             exit(1);
         }
         let mut file = file.unwrap();
@@ -388,7 +313,7 @@ async fn main() {
         loop {
             let result = file.read(&mut buffer);
             if result.is_err() {
-                eprintln!("error: failed to read file");
+                error!("failed to read file");
                 let _ = std::fs::remove_file(filename);
                 exit(1);
             }
@@ -441,6 +366,9 @@ mod tests {
             tlsv1_2: false,
             tlsv1_3: false,
             proto: String::from(""),
+            silent: false,
+            show_error: false,
+            verbose: false,
             sha256: None,
             md5: None,
         }

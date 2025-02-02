@@ -1,5 +1,14 @@
 # Notes
 
+## v0.3.0
+
+### New Features
+
+- add verbosity options
+  - `-s`: Silent mode (don't print any additional output)
+  - `-S`: print error messages, even if `-s` is set
+  - `-v`: print additional messages (not used yet)
+
 ## v0.2.0
 
 ### New Features
