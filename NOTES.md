@@ -10,6 +10,8 @@
   - `-v`: print additional messages (not used yet)
 - allow to include HTTP response headers in the output  
   new options: `-i`, `--include`
+- allow files as request body using '@' as prefix of '-d' option  
+  new option: `--data-raw`
 
 ### Fixes
 

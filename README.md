@@ -50,6 +50,7 @@ named the same as `curl`'s options. Therefore, `fetch` can be used as drop-in re
 | -X, --request | HTTP Method | Specify the request method to use |
 | -H, --header | string | Pass custom header(s) to server |
 | -d, --data | string | Post data |
+| --data-raw | string | Post data, '@' allowed |
 | -F, --form | string | Specify multipart form data as name=value pair |
 | -k, --insecure | flag | Allow insecure server connections |
 | -L, --location | flag | Follow redirects |
@@ -105,8 +106,6 @@ http / https protocol only. We also do not aim to support each http / https
 related option, since some options are rarely used. Before reaching v1.0.0
 the following feates should be supported.
 
-- allow using files for `POST` and `PUT` data  
-  curl option: `--data-raw` using `@`
 - specify root certificte for peer verification  
   curl options: `--cacert`, `--capath`, `--crlfile`
 - basic proxy support  

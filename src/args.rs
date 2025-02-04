@@ -23,6 +23,10 @@ pub struct Args {
     #[arg(short, long)]
     pub data: Option<String>,
 
+    /// Post data, '@' allowed 
+    #[arg(long="data-raw")]
+    pub data_raw: Option<String>,
+
     /// Specify multipart form data as name=value pair.
     #[arg(short='F', long)]
     pub form: Vec<String>,
