@@ -51,7 +51,7 @@ named the same as `curl`'s options. Therefore, `fetch` can be used as drop-in re
 | -H, --header | string | Pass custom header(s) to server |
 | -d, --data | string | Post data |
 | -F, --form | string | Specify multipart form data as name=value pair |
-| -K, --insecure | flag | Allow insecure server connections |
+| -k, --insecure | flag | Allow insecure server connections |
 | -L, --location | flag | Follow redirects |
 | --max-redirs | uint | Maximum number of redirects |
 | --max-filesize | uint | Maximum file size to download |

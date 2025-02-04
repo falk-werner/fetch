@@ -9,6 +9,11 @@
   - `-S`: print error messages, even if `-s` is set
   - `-v`: print additional messages (not used yet)
 
+### Fixes
+
+- use `-k` for insecure operation to match curl's CLI API  
+  (`-K` was used before)
+
 ## v0.2.0
 
 ### New Features

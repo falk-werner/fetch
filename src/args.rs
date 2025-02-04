@@ -28,7 +28,7 @@ pub struct Args {
     pub form: Vec<String>,
 
     /// Allow insecure server connections.
-    #[arg(short='K', long)]
+    #[arg(short='k', long)]
     pub insecure: bool,
 
     /// Follow redirects.
