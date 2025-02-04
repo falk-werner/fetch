@@ -64,7 +64,8 @@ named the same as `curl`'s options. Therefore, `fetch` can be used as drop-in re
 | --proto   | string | List of enabled protocols (see below) |
 | -s, --silent | flag | Silent mode |
 | -S, --show-error | flag | show error messages, even in silent mode |
-| -v, --verbose | flag | show additional log messages | 
+| -v, --verbose | flag | show additional log messages |
+| -i, --include | flag | include HTTP reponse headers in the output |
 | --sha256 | hex-string | SHA256 checksum of the artifact to download |
 | --md5 | hex-string | MD5 checksum of the artifact to download |
 | -h, --help | flag | Print help |

@@ -87,6 +87,10 @@ pub struct Args {
     #[arg(short, long)]
     pub verbose: bool,
 
+    /// Include HTTP response headers in the output.
+    #[arg(short, long)]
+    pub include: bool,
+
     /// SHA256 checksum of the artifact to download.
     #[arg(long)]
     pub sha256: Option<String>,
