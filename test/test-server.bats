@@ -19,7 +19,7 @@ teardown() {
 }
 
 @test "connect insecure" {
-    data=$($FETCH -K https://localhost:9000/)
+    data=$($FETCH -k https://localhost:9000/)
     [[ "$data" == "Welcome!" ]]
 }
 
@@ -30,39 +30,39 @@ teardown() {
 }
 
 @test "download fails due to timeout (--max-time)" {
-    if $FETCH -K https://localhost:9000/slow_answer --max-time 5; then
+    if $FETCH -k https://localhost:9000/slow_answer --max-time 5; then
         false
     fi
 }
 
 @test "post data" {
-    data=$($FETCH -K https://localhost:9000/echo_post -d foobar)
+    data=$($FETCH -k https://localhost:9000/echo_post -d foobar)
     [[ "$data" == "foobar" ]]
 }
 
 @test "put data" {
-    data=$($FETCH -K -X put https://localhost:9000/echo_put -d foobar)
+    data=$($FETCH -k -X put https://localhost:9000/echo_put -d foobar)
     [[ "$data" == "foobar" ]]
 }
 
 @test "patch data" {
-    data=$($FETCH -K -X patch https://localhost:9000/echo_patch -d foobar)
+    data=$($FETCH -k -X patch https://localhost:9000/echo_patch -d foobar)
     [[ "$data" == "foobar" ]]
 }
 
 @test "post form data" {
-    data=$($FETCH -K https://localhost:9000/echo_form -F name=Bob -F type=cat)
+    data=$($FETCH -k https://localhost:9000/echo_form -F name=Bob -F type=cat)
     echo "$data"
     [[ "$data" == "name = Bob;type = cat;" ]]
 }
 
 @test "delete data" {
-    data=$($FETCH -K -X delete https://localhost:9000/delete )
+    data=$($FETCH -k -X delete https://localhost:9000/delete )
     [[ "$data" == "Removed" ]]
 }
 
 @test "add http header" {
-    data=$($FETCH -K https://localhost:9000/user_agent -H "User-Agent: spacebox")
+    data=$($FETCH -k https://localhost:9000/user_agent -H "User-Agent: spacebox")
     echo "$data"
     [[ "$data" == "spacebox" ]]
 }
