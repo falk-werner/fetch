@@ -282,6 +282,15 @@ async fn main() {
     }
     let response = response.unwrap();
 
+    // print response headers
+    if args.include {
+        println!("{:?} {}", response.version(), response.status());
+        for (header, value) in response.headers().into_iter() {
+            println!("{}: {}", header, value.to_str().unwrap());
+        }
+        println!();
+    }
+
     let status = response.status();
     if !status.is_success() {
         error!("bad http status: {}: {}", status.as_u16(), status.as_str());
@@ -369,6 +378,7 @@ mod tests {
             silent: false,
             show_error: false,
             verbose: false,
+            include: false,
             sha256: None,
             md5: None,
         }

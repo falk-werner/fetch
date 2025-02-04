@@ -8,6 +8,8 @@
   - `-s`: Silent mode (don't print any additional output)
   - `-S`: print error messages, even if `-s` is set
   - `-v`: print additional messages (not used yet)
+- allow to include HTTP response headers in the output  
+  new options: `-i`, `--include`
 
 ### Fixes
 
