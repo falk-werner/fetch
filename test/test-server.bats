@@ -40,6 +40,18 @@ teardown() {
     [[ "$data" == "foobar" ]]
 }
 
+@test "post raw data" {
+    data=$($FETCH -k https://localhost:9000/echo_post --data-raw @foobar)
+    [[ "$data" == "@foobar" ]]
+}
+
+@test "post data from file" {
+    echo 42 > post_data.tmp
+    data=$($FETCH -k https://localhost:9000/echo_post -d @post_data.tmp)
+    rm post_data.tmp
+    [[ "$data" == "42" ]]
+}
+
 @test "put data" {
     data=$($FETCH -k -X put https://localhost:9000/echo_put -d foobar)
     [[ "$data" == "foobar" ]]

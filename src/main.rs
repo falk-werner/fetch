@@ -13,6 +13,7 @@ use std::process::exit;
 use std::io::{Write, Read};
 use sha2::{Sha256, Digest};
 use md5::Md5;
+use tokio::fs::File as TokioFile;
 
 mod logger;
 mod args;
@@ -43,7 +44,7 @@ fn get_request_method(args: & Args) -> Method {
             }
         }
     }
-    else if args.data.is_some() || !args.form.is_empty() {
+    else if args.data.is_some() || args.data_raw.is_some() || !args.form.is_empty() {
             Method::POST
     }
     else {
@@ -260,6 +261,20 @@ async fn main() {
 
     // data
     if let Some(ref data) = args.data {
+        if Some('@') == data.chars().next() {
+            let filename = &data[1..];
+            let file = TokioFile::open(filename).await;
+            if let Ok(file) = file {
+                request_builder = request_builder.body(file);
+            }
+            else {
+                warn!("failed to open file, this results in an empty request body");
+            }
+        } else {
+            request_builder = request_builder.body(data.clone());
+        }
+    }
+    else if let Some(ref data) = args.data_raw {
         request_builder = request_builder.body(data.clone());
     }
     // multipart data
@@ -362,6 +377,7 @@ mod tests {
             request: method,
             header: Vec::new(),
             data: data,
+            data_raw: None,
             form: Vec::new(),
             insecure: false,
             location: false,
