@@ -78,3 +78,9 @@ teardown() {
     echo "$data"
     [[ "$data" == "spacebox" ]]
 }
+
+@test "set user agent header" {
+    data=$($FETCH -k https://localhost:9000/user_agent -A spacebox)
+    echo "$data"
+    [[ "$data" == "spacebox" ]]
+}

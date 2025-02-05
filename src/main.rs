@@ -4,7 +4,7 @@ use futures_util::StreamExt;
 use logger::init_logger;
 use reqwest::tls::Version;
 use reqwest::{ClientBuilder, redirect::Policy};
-use reqwest::{Method, Response};
+use reqwest::{Method, Response, header};
 use reqwest::multipart::Form;
 use std::fs::File;
 use std::path::PathBuf;
@@ -259,6 +259,11 @@ async fn main() {
         }
     }
 
+    // user agent
+    if let Some(ref user_agent) = args.user_agent {
+        request_builder = request_builder.header(header::USER_AGENT, user_agent);
+    }
+
     // data
     if let Some(ref data) = args.data {
         if Some('@') == data.chars().next() {
@@ -376,6 +381,7 @@ mod tests {
             output: None,
             request: method,
             header: Vec::new(),
+            user_agent: None,
             data: data,
             data_raw: None,
             form: Vec::new(),

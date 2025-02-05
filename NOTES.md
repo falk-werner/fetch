@@ -12,6 +12,8 @@
   new options: `-i`, `--include`
 - allow files as request body using '@' as prefix of '-d' option  
   new option: `--data-raw`
+- allow to specify user agent  
+  new options: `-A`, `--user-agent` 
 
 ### Fixes
 
