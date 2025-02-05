@@ -19,6 +19,10 @@ pub struct Args {
     #[arg(short='H', long)]
     pub header: Vec<String>,
 
+    /// Send User-Agent to server.
+    #[arg(short='A', long="user-agent")]
+    pub user_agent: Option<String>,
+
     /// Post data.
     #[arg(short, long)]
     pub data: Option<String>,

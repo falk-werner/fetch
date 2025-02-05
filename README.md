@@ -49,6 +49,7 @@ named the same as `curl`'s options. Therefore, `fetch` can be used as drop-in re
 | -o, --output | Path | Write to file instead of stdout |
 | -X, --request | HTTP Method | Specify the request method to use |
 | -H, --header | string | Pass custom header(s) to server |
+| -A, --user-agent | string | Send user agent to server |
 | -d, --data | string | Post data |
 | --data-raw | string | Post data, '@' allowed |
 | -F, --form | string | Specify multipart form data as name=value pair |
@@ -128,7 +129,7 @@ There are also some useful features which may be supported after v1.0.0:
 - put post data in url for GET request  
   curl options: `-G`, `--get`
 - convenience helpers for often used headers  
-  curl options: `-u`, `--user`, `-A`, `--user-agent`, `-r`, `--range`, `-e`, `--referer`, `-b`, `--cookie`, `-c`, `--cookie-jar`
+  curl options: `-u`, `--user`, `-r`, `--range`, `-e`, `--referer`, `-b`, `--cookie`, `-c`, `--cookie-jar`
 - redirect `stderr`  
   curl option: `--stderr`
 
