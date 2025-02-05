@@ -75,12 +75,33 @@ teardown() {
 
 @test "add http header" {
     data=$($FETCH -k https://localhost:9000/user_agent -H "User-Agent: spacebox")
-    echo "$data"
     [[ "$data" == "spacebox" ]]
 }
 
 @test "set user agent header" {
     data=$($FETCH -k https://localhost:9000/user_agent -A spacebox)
-    echo "$data"
     [[ "$data" == "spacebox" ]]
+}
+
+@test "print body on http error" {
+    data=$($FETCH -k https://localhost:9000/error)
+    [[ "$data" == "Something went wrong." ]]
+}
+
+@test "fail silently on http error (--fail)" {
+    if $FETCH -k --fail https://localhost:9000/error ; then
+        false
+    fi
+
+    data=$($FETCH -k --fail https://localhost:9000/error || true)
+    [[ "$data" == "" ]]
+}
+
+@test "fail with body on http error (--fail-with-body)" {
+    if $FETCH -k --fail-with-body https://localhost:9000/error ; then
+        false
+    fi
+
+    data=$($FETCH -k --fail-with-body https://localhost:9000/error || true)
+    [[ "$data" == "Something went wrong." ]]
 }

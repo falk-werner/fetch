@@ -13,7 +13,9 @@
 - allow files as request body using '@' as prefix of '-d' option  
   new option: `--data-raw`
 - allow to specify user agent  
-  new options: `-A`, `--user-agent` 
+  new options: `-A`, `--user-agent`
+- allow to fail with and without output of response body  
+  new options: `-f`, `--fail`, `--fail-with-body`
 
 ### Fixes
 

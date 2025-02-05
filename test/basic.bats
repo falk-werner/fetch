@@ -32,17 +32,15 @@ teardown() {
 }
 
 @test "download fails with invalid url" {
-    if $FETCH $URL-invalid -o $DATA_DIR/out.bin ; then
+    if $FETCH https://invalid-url.org -o $DATA_DIR/out.bin ; then
         false
     fi
     [[ ! -e $DATA_DIR/out.bin ]]
 }
 
-@test "download fails without redirect" {
-    if $FETCH $URL -o $DATA_DIR/out.bin ; then
-        false
-    fi
-    [[ ! -e $DATA_DIR/out.bin ]]
+@test "download is empty without redirect" {
+    data=$($FETCH $URL)
+    [[ "$data" == "" ]]
 }
 
 @test "check SHA256" {

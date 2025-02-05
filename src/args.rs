@@ -99,6 +99,14 @@ pub struct Args {
     #[arg(short, long)]
     pub include: bool,
 
+    /// Fail silently (no output at all) on HTTP errors
+    #[arg(short, long)]
+    pub fail: bool,
+
+    /// Fail on HTTP errors but save the body
+    #[arg(long="fail-with-body")]
+    pub fail_with_body: bool,
+
     /// SHA256 checksum of the artifact to download.
     #[arg(long)]
     pub sha256: Option<String>,

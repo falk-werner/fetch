@@ -7,6 +7,7 @@ use axum::{
     routing::put,
     routing::patch,
     routing::delete,
+    response::Response,
     Router,
 };
 
@@ -24,6 +25,7 @@ async fn main() {
         .route("/echo_form", post(echo_form))
         .route("/delete", delete(do_delete))
         .route("/user_agent", get(get_user_agent))
+        .route("/error", get(get_error))
         ;
 
     // configure certificate and private key used by https
@@ -81,4 +83,11 @@ async fn get_user_agent(request: Request) -> String {
     else {
         String::from("unknonwn")
     }
+}
+
+async fn get_error() -> Response {
+    Response::builder()
+        .status(500)
+        .body("Something went wrong.".into())
+        .unwrap()
 }

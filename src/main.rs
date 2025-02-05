@@ -9,7 +9,7 @@ use reqwest::multipart::Form;
 use std::fs::File;
 use std::path::PathBuf;
 use std::time::Duration;
-use std::process::exit;
+use std::process::{exit, ExitCode};
 use std::io::{Write, Read};
 use sha2::{Sha256, Digest};
 use md5::Md5;
@@ -182,7 +182,8 @@ async fn download(response: Response,args: &Args, filename: &PathBuf) {
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> ExitCode {
+    let mut exit_code = ExitCode::SUCCESS;
     let args = Args::parse();
     init_logger(&args);
 
@@ -313,8 +314,15 @@ async fn main() {
 
     let status = response.status();
     if !status.is_success() {
-        error!("bad http status: {}: {}", status.as_u16(), status.as_str());
-        exit(1);
+        if args.fail {
+            error!("bad http status: {}", status.as_u16());
+            exit(1);
+        }
+        if args.fail_with_body {
+            error!("bad http status: {}", status.as_u16());
+            exit_code = ExitCode::FAILURE;
+        }
+    
     }
 
     if args.max_filesize > 0 {
@@ -359,6 +367,8 @@ async fn main() {
 
         let _ = std::fs::remove_file(filename);
     }
+
+    exit_code
 }
 
 #[cfg(test)]
@@ -401,6 +411,8 @@ mod tests {
             show_error: false,
             verbose: false,
             include: false,
+            fail: false,
+            fail_with_body: false,
             sha256: None,
             md5: None,
         }

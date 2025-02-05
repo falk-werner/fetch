@@ -68,6 +68,8 @@ named the same as `curl`'s options. Therefore, `fetch` can be used as drop-in re
 | -S, --show-error | flag | show error messages, even in silent mode |
 | -v, --verbose | flag | show additional log messages |
 | -i, --include | flag | include HTTP reponse headers in the output |
+| -f, --fail | flag | Fail silently (no output at all) on HTTP errors |
+| --fail-with-body | flag | Fail on HTTP errors but save the body |
 | --sha256 | hex-string | SHA256 checksum of the artifact to download |
 | --md5 | hex-string | MD5 checksum of the artifact to download |
 | -h, --help | flag | Print help |
@@ -122,8 +124,6 @@ There are also some useful features which may be supported after v1.0.0:
   curl options: `-I`, `--head`
 - dump response headers info file  
   curl options: `-D`, `--dump-reader`
-- allow to output body on http errors  
-  curl option: `--fail-with-body`
 - etag support  
   curl options: `--etag-compare`, `--etag-save`
 - put post data in url for GET request  
