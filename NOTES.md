@@ -1,5 +1,13 @@
 # Notes
 
+## v0.4.0
+
+### New Features
+
+
+<details>
+<summary>Older Versions</summary>
+
 ## v0.3.0
 
 ### New Features
@@ -21,9 +29,6 @@
 
 - use `-k` for insecure operation to match curl's CLI API  
   (`-K` was used before)
-
-<details>
-<summary>Older Versions</summary>
 
 ## v0.2.0
 
