@@ -22,6 +22,9 @@
 - use `-k` for insecure operation to match curl's CLI API  
   (`-K` was used before)
 
+<details>
+<summary>Older Versions</summary>
+
 ## v0.2.0
 
 ### New Features
@@ -44,3 +47,5 @@
 ## v0.1.0
 
 Initial version.
+
+</details>
