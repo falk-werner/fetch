@@ -107,6 +107,10 @@ pub struct Args {
     #[arg(long="fail-with-body")]
     pub fail_with_body: bool,
 
+    /// [protocol://]host[:port] Use this proxy
+    #[arg(short='x', long)]
+    pub proxy: Option<String>,
+
     /// SHA256 checksum of the artifact to download.
     #[arg(long)]
     pub sha256: Option<String>,

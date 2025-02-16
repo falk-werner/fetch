@@ -4,7 +4,7 @@ use futures_util::StreamExt;
 use logger::init_logger;
 use reqwest::tls::Version;
 use reqwest::{ClientBuilder, redirect::Policy};
-use reqwest::{Method, Response, header};
+use reqwest::{Method, Response, Proxy, header};
 use reqwest::multipart::Form;
 use std::fs::File;
 use std::path::PathBuf;
@@ -242,6 +242,12 @@ async fn main() -> ExitCode {
         builder = builder.https_only(true);
     }
 
+    if let Some(ref proxy) = args.proxy {
+        builder = builder.proxy(Proxy::http(proxy).unwrap());
+    }
+
+
+
     let client = builder.build();
     if client.is_err() {
         error!("failed to create http client");
@@ -413,6 +419,7 @@ mod tests {
             include: false,
             fail: false,
             fail_with_body: false,
+            proxy: None,
             sha256: None,
             md5: None,
         }

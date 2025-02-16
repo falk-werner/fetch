@@ -70,6 +70,7 @@ named the same as `curl`'s options. Therefore, `fetch` can be used as drop-in re
 | -i, --include | flag | include HTTP reponse headers in the output |
 | -f, --fail | flag | Fail silently (no output at all) on HTTP errors |
 | --fail-with-body | flag | Fail on HTTP errors but save the body |
+| -x, --proxy | string | | [protocol://]host[:port] Use this proxy
 | --sha256 | hex-string | SHA256 checksum of the artifact to download |
 | --md5 | hex-string | MD5 checksum of the artifact to download |
 | -h, --help | flag | Print help |
@@ -111,8 +112,6 @@ the following feates should be supported.
 
 - specify root certificte for peer verification  
   curl options: `--cacert`, `--capath`, `--crlfile`
-- basic proxy support  
-  curl options: `-x`, `--proxy`, `-U`, `--proxy-user`
 
 There are also some useful features which may be supported after v1.0.0:
 
@@ -129,7 +128,8 @@ There are also some useful features which may be supported after v1.0.0:
 - put post data in url for GET request  
   curl options: `-G`, `--get`
 - convenience helpers for often used headers  
-  curl options: `-u`, `--user`, `-r`, `--range`, `-e`, `--referer`, `-b`, `--cookie`, `-c`, `--cookie-jar`
+  curl options: `-u`, `--user`, `-r`, `--range`, `-e`, `--referer`, `-b`,  
+  `--cookie`, `-c`, `--cookie-jar`, `-U`, `--proxy-user`
 - redirect `stderr`  
   curl option: `--stderr`
 

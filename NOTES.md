@@ -4,6 +4,8 @@
 
 ### New Features
 
+- add basic proxy support  
+  new options: `-x`, `--proxy`
 
 <details>
 <summary>Older Versions</summary>
