@@ -1,14 +1,18 @@
 # Notes
 
+## v0.5.0
+
+### New Features
+
+<details>
+<summary>Older Versions</summary>
+
 ## v0.4.0
 
 ### New Features
 
 - add basic proxy support  
   new options: `-x`, `--proxy`
-
-<details>
-<summary>Older Versions</summary>
 
 ## v0.3.0
 
