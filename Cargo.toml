@@ -15,7 +15,7 @@ edition = "2021"
 clap = { version = "4.5.30", features = ["derive"] }
 futures-util = "0.3.31"
 hex = "0.4.3"
-log = "0.4.25"
+log = "0.4.26"
 md-5 = "0.10.6"
 reqwest = { version = "0.12.12", features = ["multipart", "stream", "rustls-tls"] }
 sha2 = "0.10.8"
