@@ -109,13 +109,9 @@ option was added to maintain compatibility with `curl`.
 
 Fetch does not aim at full curl compatibility, since fetch focuses on
 http / https protocol only. We also do not aim to support each http / https
-related option, since some options are rarely used. Before reaching v1.0.0
-the following feates should be supported.
+related option, since some options are rarely used.
 
-- specify root certificte for peer verification  
-  curl options: `--crlfile`
-
-There are also some useful features which may be supported after v1.0.0:
+The following options are planned to be added in future:
 
 - mTLS support  
   curl options: `-E`, `--cert`, `--cert-status`, `--cert-type`
