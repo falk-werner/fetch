@@ -6,6 +6,8 @@
 
 - allow to use additional CA certificates  
   new options: `--cacert`
+- allow to specify certificate revokation lists
+  new options: `--crlfile`
 
 <details>
 <summary>Older Versions</summary>

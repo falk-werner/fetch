@@ -72,6 +72,7 @@ named the same as `curl`'s options. Therefore, `fetch` can be used as drop-in re
 | --fail-with-body | flag | Fail on HTTP errors but save the body |
 | -x, --proxy | string | | [protocol://]host[:port] Use this proxy |
 | --cacert | string | CA certificate to verify peer against |
+| --crlfile | string |Use this CRL list |
 | --sha256 | hex-string | SHA256 checksum of the artifact to download |
 | --md5 | hex-string | MD5 checksum of the artifact to download |
 | -h, --help | flag | Print help |
@@ -112,7 +113,7 @@ related option, since some options are rarely used. Before reaching v1.0.0
 the following feates should be supported.
 
 - specify root certificte for peer verification  
-  curl options: `--capath`, `--crlfile`
+  curl options: `--crlfile`
 
 There are also some useful features which may be supported after v1.0.0:
 
