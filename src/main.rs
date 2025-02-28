@@ -52,7 +52,7 @@ fn get_request_method(args: & Args) -> Method {
     }
 }
 
-fn get_protocols(protocols: &String) -> Protocols
+fn get_protocols(protocols: &str) -> Protocols
 {
     let mut result = Protocols {http: true, https: true };
     for part in protocols.split(',') {
@@ -334,8 +334,7 @@ async fn main() -> ExitCode {
 
     // data
     if let Some(ref data) = args.data {
-        if Some('@') == data.chars().next() {
-            let filename = &data[1..];
+        if let Some(filename) = data.strip_prefix('@') {
             let file = TokioFile::open(filename).await;
             if let Ok(file) = file {
                 request_builder = request_builder.body(file);
