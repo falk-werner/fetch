@@ -4,7 +4,7 @@ use futures_util::StreamExt;
 use logger::init_logger;
 use reqwest::tls::Version;
 use reqwest::{ClientBuilder, redirect::Policy};
-use reqwest::{Method, Response, Proxy, header};
+use reqwest::{header, Certificate, Method, Proxy, Response};
 use reqwest::multipart::Form;
 use std::fs::File;
 use std::path::PathBuf;
@@ -242,10 +242,47 @@ async fn main() -> ExitCode {
         builder = builder.https_only(true);
     }
 
+    // proxy
     if let Some(ref proxy) = args.proxy {
         builder = builder.proxy(Proxy::http(proxy).unwrap());
     }
 
+    // CA certificate
+    if let Some(ref cacert) = args.cacert {
+        let file = File::open(cacert);
+        if file.is_err() {
+            eprintln!("failed to open CA certificate file");
+            return ExitCode::FAILURE;
+        }
+
+        let mut file = file.unwrap();
+        let mut data : Vec<u8> = vec!();
+        if file.read_to_end(&mut data).is_err() {
+            eprintln!("failed to read CA certifcate file");
+            return ExitCode::FAILURE;
+        }
+
+        if cacert.ends_with(".der") {
+            let cert = Certificate::from_der(data.as_ref());
+            if cert.is_err() {
+                eprintln!("failed to load DER certificate");
+                return ExitCode::FAILURE;
+            }
+            let cert = cert.unwrap();
+            builder = builder.add_root_certificate(cert);
+        }
+        else {
+            let certs = Certificate::from_pem_bundle(data.as_ref());
+            if certs.is_err() {
+                eprintln!("failed to load PEM certificate bundle");
+                return ExitCode::FAILURE;
+            }
+            let certs = certs.unwrap();
+            for cert in certs {
+                builder = builder.add_root_certificate(cert);
+            }
+        }
+    }
 
 
     let client = builder.build();
@@ -420,6 +457,7 @@ mod tests {
             fail: false,
             fail_with_body: false,
             proxy: None,
+            cacert: None,
             sha256: None,
             md5: None,
         }

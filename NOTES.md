@@ -4,6 +4,9 @@
 
 ### New Features
 
+- allow to use additional CA certificates  
+  new options: `--cacert`
+
 <details>
 <summary>Older Versions</summary>
 
