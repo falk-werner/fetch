@@ -111,6 +111,10 @@ pub struct Args {
     #[arg(short='x', long)]
     pub proxy: Option<String>,
 
+    /// CA certificate to verify peer against
+    #[arg(long)]
+    pub cacert: Option<String>,
+
     /// SHA256 checksum of the artifact to download.
     #[arg(long)]
     pub sha256: Option<String>,

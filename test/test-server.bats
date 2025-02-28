@@ -105,3 +105,14 @@ teardown() {
     data=$($FETCH -k --fail-with-body https://localhost:9000/error || true)
     [[ "$data" == "Something went wrong." ]]
 }
+
+@test "use ca certificate" {
+    data=$($FETCH --cacert test-utils/test-server/src/cert.pem https://localhost:9000/)
+    [[ "$data" == "Welcome!" ]]
+}
+
+@test "fail with ca certificate and invalid hostname" {
+    if $FETCH --cacert test-utils/test-server/src/cert.pem https://127.0.0.1:9000/ ; then
+        false
+    fi
+}
