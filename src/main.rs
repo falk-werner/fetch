@@ -2,7 +2,7 @@ use clap::Parser;
 use log::{warn, error};
 use futures_util::StreamExt;
 use logger::init_logger;
-use reqwest::tls::Version;
+use reqwest::tls::{CertificateRevocationList, Version};
 use reqwest::{ClientBuilder, redirect::Policy};
 use reqwest::{header, Certificate, Method, Proxy, Response};
 use reqwest::multipart::Form;
@@ -284,6 +284,30 @@ async fn main() -> ExitCode {
         }
     }
 
+    // CRL
+    if let Some(ref crlfile) = args.crlfile {
+        let file = File::open(crlfile);
+        if file.is_err() {
+            eprintln!("failed to open CRL file");
+            return ExitCode::FAILURE;
+        }
+
+        let mut file = file.unwrap();
+        let mut data : Vec<u8> = vec!();
+        if file.read_to_end(&mut data).is_err() {
+            eprintln!("failed to read CRL file");
+            return ExitCode::FAILURE;
+        }
+    
+        let crls = CertificateRevocationList::from_pem_bundle(data.as_ref());
+        if crls.is_err() {
+            eprintln!("failed to load CRL(s)");
+            return ExitCode::FAILURE;
+        }
+        let crls = crls.unwrap();
+
+        builder = builder.add_crls(crls);
+    }
 
     let client = builder.build();
     if client.is_err() {
@@ -458,6 +482,7 @@ mod tests {
             fail_with_body: false,
             proxy: None,
             cacert: None,
+            crlfile: None,
             sha256: None,
             md5: None,
         }

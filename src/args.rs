@@ -115,6 +115,10 @@ pub struct Args {
     #[arg(long)]
     pub cacert: Option<String>,
 
+    /// Use this CRL list
+    #[arg(long)]
+    pub crlfile: Option<String>,
+
     /// SHA256 checksum of the artifact to download.
     #[arg(long)]
     pub sha256: Option<String>,
