@@ -20,7 +20,7 @@ md-5 = "0.10.6"
 reqwest = { version = "0.12.12", features = ["multipart", "stream", "rustls-tls"] }
 sha2 = "0.10.8"
 tempfile = "3.17.1"
-tokio = { version = "1.43.0", features = ["macros", "rt", "rt-multi-thread"] }
+tokio = { version = "1.44.0", features = ["macros", "rt", "rt-multi-thread"] }
 
 [package.metadata.deb]
 maintainer = "Falk Werner"
