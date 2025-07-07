@@ -17,7 +17,7 @@ futures-util = "0.3.31"
 hex = "0.4.3"
 log = "0.4.27"
 md-5 = "0.10.6"
-reqwest = { version = "0.12.20", features = ["multipart", "stream", "rustls-tls"] }
+reqwest = { version = "0.12.22", features = ["multipart", "stream", "rustls-tls"] }
 sha2 = "0.10.9"
 tempfile = "3.20.0"
 tokio = { version = "1.45.1", features = ["macros", "rt", "rt-multi-thread"] }
