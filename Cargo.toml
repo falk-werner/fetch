@@ -19,7 +19,7 @@ log = "0.4.28"
 md-5 = "0.10.6"
 reqwest = { version = "0.12.23", features = ["multipart", "stream", "rustls-tls"] }
 sha2 = "0.10.9"
-tempfile = "3.22.0"
+tempfile = "3.23.0"
 tokio = { version = "1.47.1", features = ["macros", "rt", "rt-multi-thread"] }
 
 [package.metadata.deb]
