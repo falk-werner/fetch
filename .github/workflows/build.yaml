@@ -45,7 +45,7 @@ jobs:
       run: bats test
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: fetch-${{ matrix.platform }}.deb
         path: target/debian/fetch_*_amd64.deb 
