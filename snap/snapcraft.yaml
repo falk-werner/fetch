@@ -1,6 +1,6 @@
 name: fetch 
 base: core22
-version: '1.0.0'
+version: '1.0.1'
 license: 'MIT'
 summary: Download files and verify checksum.
 description: |
