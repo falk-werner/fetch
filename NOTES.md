@@ -1,5 +1,14 @@
 # Notes
 
+## v1.0.1
+
+### Changes
+
+- update dependencies
+
+<details>
+<summary>Older Versions</summary>
+
 ## v1.0.0
 
 ### New Features
@@ -8,9 +17,6 @@
   new options: `--cacert`
 - allow to specify certificate revokation lists
   new options: `--crlfile`
-
-<details>
-<summary>Older Versions</summary>
 
 ## v0.4.0
 
